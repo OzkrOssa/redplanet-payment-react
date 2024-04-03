@@ -1,10 +1,10 @@
-import React from 'react'
+import { ApiResponseProvider } from "@/context/ApiResponseContext";
 
 function App() {
   return (
-    <React.Fragment>
+    <ApiResponseProvider>
       <p>Hello World</p>
-    </React.Fragment>
+    </ApiResponseProvider>
   )
 }
 
