@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Input } from "@/components/ui/index";
 import { useApiResponseContext } from "@/context/ApiResponseContext";
 import { fetchApiData } from "@/api/ApiClient";
+import Laptop from "@/assets/images/laptop.png"
 
 function SearchForm() {
   const [searchType, setSearchType] = React.useState("documento");
@@ -78,7 +79,7 @@ function SearchForm() {
 
         <div className="hidden md:block absolute inset-0 flex items-center justify-center md:static md:w-1/2">
           <img
-            src="/laptop.png"
+            src={Laptop}
             alt="Imagen"
             className="max-w-full mt-20"
             width={700}
