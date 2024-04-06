@@ -1,30 +1,61 @@
-# React + TypeScript + Vite
+# Red Planet Online Payment
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project provide a easy way to pay red planet services via PAYU, Credit/Debit Card and PSE
 
-Currently, two official plugins are available:
+## Configuration
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### API Client
 
-## Expanding the ESLint configuration
+To configure the API token, navigate to the `ApiClient` file located at `/src/api/ApiClient`.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```javascript
+const token = "YOUR_ACCESS_TOKEN";
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Auth Token
+
+Depending on your payment method (Card or PSE), you'll need to configure the API code and API key provided by `Paymentez/Nuvei`. These keys are used to generate the authentication token for inclusion in the request header.
+
+```typescript
+import { generateAuthCardToken, generateAuthPSEToken } from "@/lib/generateAuthToken";
+
+// For Card
+const apiCodeCard = "YOUR_API_CODE_CARD";
+const apiKeyCard = "YOUR_API_KEY_CARD";
+const authTokenCard = generateAuthCardToken(apiCodeCard, apiKeyCard);
+
+// For PSE
+const apiCodePse = "YOUR_API_CODE_PSE";
+const apiKeyPse = "YOUR_API_KEY_PSE";
+const authTokenPse = generateAuthPSEToken(apiCodePse, apiKeyPse);
+```
+
+### Paymentez SDK
+
+Navigate to the `PaymentezSdk` file located at `/src/component/PaymentOptions/PaymentezSdk.tsx`. You'll need to configure the environment, client app code, and key. These keys are provided by Paymentez or Nuvei. This configuration is specifically for tokenizing the card used for payment.
+
+```typescript
+const paymentGatewayConfig = {
+  environment: "YOUR_ENVIRONMET",
+  clientAppCode: "YOUR_CLIENT_APPCODE",
+  clientAppKey: "YOUR_CLIENT_APPKEY",
+};
+
+const paymentez = new PaymentGateway(
+  paymentGatewayConfig.environment,
+  paymentGatewayConfig.clientAppCode,
+  paymentGatewayConfig.clientAppKey
+);
+```
+
+### PayU
+
+Navigate to file located at `/src/hooks/usePayUConfig`. You'll need to configure `merchantID`, `accountID` and `apiKey` provided by PayU.
+
+```typescript
+const payUConfig: PayUConfig = {
+  apiKey: "PAYU_APIKEY",
+  accountID: "PAYU_ACCOUNT_ID",
+  merchantID: "PAYU_MERCHANT_ID",
+};
+```
