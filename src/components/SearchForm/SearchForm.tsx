@@ -3,6 +3,7 @@ import { Button, Input } from "@/components/ui/index";
 import { useApiResponseContext } from "@/context/ApiResponseContext";
 import { fetchApiData } from "@/api/ApiClient";
 import Laptop from "@/assets/images/laptop.png"
+import SearchResults from "./SearchResult";
 
 function SearchForm() {
   const [searchType, setSearchType] = React.useState("documento");
@@ -52,7 +53,7 @@ function SearchForm() {
           </div>
           {apiResponse ? (
             //TODO: implement seach result component
-            <div>Search Component HERE</div>
+            <SearchResults data={apiResponse}/>
           ) : (
             <div className="w-full md:w-5/12 text-center">
               <Input

@@ -1,5 +1,6 @@
 import React from "react";
 import { PayU } from "@/components/PaymentOptions";
+import { Card } from "./Card";
 
 function PaymentOptions() {
   return (
@@ -9,7 +10,7 @@ function PaymentOptions() {
         {/* PayU Component */}
         <PayU/>
         {/* Card Component */}
-        
+        <Card/>
         {/* Pse Component */}
       </div>
     </React.Fragment>

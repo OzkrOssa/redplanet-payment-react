@@ -1,6 +1,7 @@
 import formatDate from "@/lib/formatDate";
 import { ApiResponse } from "@/types/ApiResponse";
 import React from "react";
+import { PaymentOptions } from "@/components/PaymentOptions";
 
 function SearchResults({ data }: { data: ApiResponse }) {
   return (
@@ -40,7 +41,7 @@ function SearchResults({ data }: { data: ApiResponse }) {
               </div>
             </div>
           </div>
-          {/* implement payment options component */}
+          <PaymentOptions/>
         </>
       ) : (
         <div className="text-3xl font-semibold text-red-500 mt-10 ">
