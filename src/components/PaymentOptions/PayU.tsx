@@ -2,11 +2,11 @@ import React from "react";
 import payU from "@/assets/images/payu.png";
 import { Button } from "@/components/ui";
 import { useApiResponseContext } from "@/context/ApiResponseContext";
-import { useSignaturePayU } from "@/hooks/useSignaturePayU";
+import { usePayUConfig } from "@/hooks/usePayUConfig";
 
 function PayU() {
   const { apiResponse } = useApiResponseContext();
-  const { signature } = useSignaturePayU(apiResponse);
+  const { signature, payUConfig } = usePayUConfig(apiResponse);
 
   //TODO: add confirmation url and response url
   return (
@@ -17,8 +17,8 @@ function PayU() {
           action="https://checkout.payulatam.com/ppp-web-gateway-payu/"
         >  
         {/* ADD merchantId & accountId*/}
-          <input name="merchantId" type="hidden" value={""} />
-          <input name="accountId" type="hidden" value={""} />
+          <input name="merchantId" type="hidden" value={payUConfig.merchantID} />
+          <input name="accountId" type="hidden" value={payUConfig.accountID} />
           <input
             name="description"
             type="hidden"
