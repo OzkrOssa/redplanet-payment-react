@@ -1,18 +1,21 @@
 import React from "react";
 import { Button } from "@/components/ui";
 import { TokenizeCardResponse, TokenizeData } from "@/types/Paymentez";
-import { useApiResponseContext, usePaymentezSdkResponseContext } from "@/context";
+import { useApiResponseContext } from "@/context";
 
 export default function PaymentezSdk({
   setShowModal,
+  responseRecived,
 }: {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  responseRecived: React.Dispatch<
+    React.SetStateAction<TokenizeCardResponse | null>
+  >;
 }) {
   const [paymentezSDK, setPaymentezSDK] = React.useState(null);
   const [notCompleteForm, setNotCompleteForm] = React.useState("");
-  const [textSubmitButton, setTextSubmitButton] = React.useState("Save Card");
+  const [textSubmitButton, setTextSubmitButton] = React.useState("Pagar");
   const { apiResponse } = useApiResponseContext();
-  const { setTokenizeCardData } = usePaymentezSdkResponseContext();
 
   //TODO: refactor this, i guess can add to conext
   React.useEffect(() => {
@@ -30,6 +33,7 @@ export default function PaymentezSdk({
     return () => {
       document.body.removeChild(script);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const initializePaymentForm = () => {
@@ -47,9 +51,9 @@ export default function PaymentezSdk({
 
       const paymentGatewayConfig = {
         environment: "",
-        clientAppCode :"",
-        clientAppKey:""
-      }
+        clientAppCode: "",
+        clientAppKey: "",
+      };
 
       // @ts-expect-error: exteral library
       const paymentez = new PaymentGateway(
@@ -68,8 +72,7 @@ export default function PaymentezSdk({
         };
 
         const responseCallback = (response: TokenizeCardResponse) => {
-          console.log(response)
-          setTokenizeCardData(response)
+          responseRecived(response);
           setShowModal(false);
           setTextSubmitButton("Pagar");
         };
@@ -86,7 +89,7 @@ export default function PaymentezSdk({
 
   const handleTokenize = () => {
     setNotCompleteForm("");
-    setTextSubmitButton("Procesando targeta");
+    setTextSubmitButton("Procesando targeta...");
     // @ts-expect-error: external
     paymentezSDK.tokenize();
   };
