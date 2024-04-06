@@ -1,0 +1,107 @@
+import React from "react";
+import { Button } from "@/components/ui";
+import { TokenizeCardResponse, TokenizeData } from "@/types/Paymentez";
+import { useApiResponseContext, usePaymentezSdkResponseContext } from "@/context";
+
+export default function PaymentezSdk({
+  setShowModal,
+}: {
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const [paymentezSDK, setPaymentezSDK] = React.useState(null);
+  const [notCompleteForm, setNotCompleteForm] = React.useState("");
+  const [textSubmitButton, setTextSubmitButton] = React.useState("Save Card");
+  const { apiResponse } = useApiResponseContext();
+  const { setTokenizeCardData } = usePaymentezSdkResponseContext();
+
+  //TODO: refactor this, i guess can add to conext
+  React.useEffect(() => {
+    const script = document.createElement("script");
+    script.src =
+      "https://cdn.paymentez.com/ccapi/sdk/payment_sdk_stable.min.js";
+    script.async = true;
+
+    script.onload = () => {
+      initializePaymentForm();
+    };
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  const initializePaymentForm = () => {
+    if (apiResponse) {
+      const tokenizeData: TokenizeData = {
+        locale: "es",
+        user: {
+          email: apiResponse.email,
+          id: apiResponse.subscriber,
+        },
+        configuration: {
+          default_country: "COL",
+        },
+      };
+
+      const paymentGatewayConfig = {
+        environment: "",
+        clientAppCode :"",
+        clientAppKey:""
+      }
+
+      // @ts-expect-error: exteral library
+      const paymentez = new PaymentGateway(
+        paymentGatewayConfig.environment,
+        paymentGatewayConfig.clientAppCode,
+        paymentGatewayConfig.clientAppKey
+      );
+
+      setPaymentezSDK(paymentez);
+
+      if (paymentez) {
+        const notCompletedFormCallback = (message: string) => {
+          setNotCompleteForm(
+            `Not completed form: ${message}, Please fill required data`
+          );
+        };
+
+        const responseCallback = (response: TokenizeCardResponse) => {
+          console.log(response)
+          setTokenizeCardData(response)
+          setShowModal(false);
+          setTextSubmitButton("Pagar");
+        };
+
+        paymentez.generate_tokenize(
+          tokenizeData,
+          "#tokenize_form",
+          responseCallback,
+          notCompletedFormCallback
+        );
+      }
+    }
+  };
+
+  const handleTokenize = () => {
+    setNotCompleteForm("");
+    setTextSubmitButton("Procesando targeta");
+    // @ts-expect-error: external
+    paymentezSDK.tokenize();
+  };
+  return (
+    <React.Fragment>
+      <div id="tokenize_form"></div>
+      {notCompleteForm ? (
+        <Button onClick={handleTokenize} variant={"outline"} className="w-full">
+          Internar nuevamente
+        </Button>
+      ) : (
+        <Button onClick={handleTokenize} variant={"outline"} className="w-full">
+          {textSubmitButton}
+        </Button>
+      )}
+    </React.Fragment>
+  );
+}
