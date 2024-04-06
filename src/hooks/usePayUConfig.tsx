@@ -19,7 +19,6 @@ function usePayUConfig(apiResponse: ApiResponse | null) {
   React.useEffect(() => {
     if (apiResponse) {
       const message = `${payUConfig.apiKey}~${payUConfig.merchantID}~${apiResponse.bill_number}~${apiResponse.total_pay}~COP`;
-      console.log(message);
       const hash = MD5(message).toString();
       setSignature(hash);
     }
