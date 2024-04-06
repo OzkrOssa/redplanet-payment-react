@@ -12,6 +12,7 @@ const PaymentezSdkResponseContext = React.createContext<{
     setTokenizeCardData: () => {}
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const usePaymentezSdkResponseContext = () =>
   React.useContext(PaymentezSdkResponseContext);
 
