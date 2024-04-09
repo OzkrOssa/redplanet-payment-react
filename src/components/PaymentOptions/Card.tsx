@@ -3,15 +3,16 @@ import CardImage from "@/assets/images/cards.png";
 import { Button } from "@/components/ui";
 import PaymentezSdk from "./PaymentezSdk";
 import { X } from "lucide-react";
-import { useApiResponseContext, usePaymentezSdkResponseContext } from "@/context";
+import { useApiResponseContext, useGlobalPaymentResponseContext, usePaymentezSdkResponseContext } from "@/context";
 import { useCreateCardPayment } from "@/hooks";
 
 function Card() {
   const [showModal, setShowModal] = React.useState(false);
   const { tokenizeCardData, setTokenizeCardData } = usePaymentezSdkResponseContext();
   const { apiResponse } = useApiResponseContext();
-  
   useCreateCardPayment(apiResponse, tokenizeCardData)
+
+  const { setGlobalPaymentResponse, setLoading } = useGlobalPaymentResponseContext();
 
   return (
     <React.Fragment>
@@ -25,6 +26,9 @@ function Card() {
             className="w-full h-full"
             onClick={() => {
               setShowModal(true);
+              setTokenizeCardData(null)
+              setGlobalPaymentResponse(null)
+              setLoading(false)
             }}
           />
         </Button>

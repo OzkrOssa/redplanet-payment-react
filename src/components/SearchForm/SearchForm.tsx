@@ -2,18 +2,22 @@ import React from "react";
 import { Button, Input } from "@/components/ui/index";
 import { useApiResponseContext } from "@/context/ApiResponseContext";
 import { fetchApiData } from "@/api/ApiClient";
-import Laptop from "@/assets/images/laptop.png"
+import Laptop from "@/assets/images/laptop.png";
 import SearchResults from "./SearchResult";
+import { useGlobalPaymentResponseContext } from "@/context";
 
 function SearchForm() {
   const [searchType, setSearchType] = React.useState("documento");
   const [searchValue, setSearchValue] = React.useState("");
-
+  const { setGlobalPaymentResponse, setLoading } =
+    useGlobalPaymentResponseContext();
   const { apiResponse, setApiResponse } = useApiResponseContext();
   const handleSearchTypeChange = (type: string) => {
     setSearchType(type);
-    setApiResponse(null)
+    setApiResponse(null);
     setSearchValue("");
+    setGlobalPaymentResponse(null)
+    setLoading(false)
   };
 
   const handleSearch = async () => {
@@ -27,7 +31,7 @@ function SearchForm() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center font-[Poppins]">
       <div className="flex flex-row w-full justify-between relative">
         <div className="w-full md:w-1/2 flex flex-col items-center p-4">
           <div className="font-semibold text-3xl md:text-6xl lg:text-6xl xl:text-8xl xl:text-left text-center p-10">
@@ -53,13 +57,15 @@ function SearchForm() {
           </div>
           {apiResponse ? (
             //TODO: implement seach result component
-            <SearchResults data={apiResponse}/>
+            <SearchResults data={apiResponse} />
           ) : (
             <div className="w-full md:w-5/12 text-center">
               <Input
                 type="number"
                 value={searchValue}
-                onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setSearchValue(e.target.value)}
+                onChange={(e: {
+                  target: { value: React.SetStateAction<string> };
+                }) => setSearchValue(e.target.value)}
                 placeholder={
                   searchType === "factura"
                     ? "Escribe tu factura"
