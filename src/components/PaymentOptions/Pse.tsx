@@ -19,7 +19,7 @@ function Pse() {
   const { banks } = useBankList();
   const {apiResponse} = useApiResponseContext()
   const {ipAddress} = useIpAddress()
-  const {sendPayOrder} = useCreatePsePayment()
+  const {sendPayOrder} = useCreatePsePayment(apiResponse)
   const { setGlobalPaymentResponse, setLoading } = useGlobalPaymentResponseContext();
   const FormSchema = z.object({
     bank: z.string({

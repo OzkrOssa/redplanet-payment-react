@@ -1,9 +1,11 @@
+import { SavePayment } from "@/api/Pocketbase";
 import { useGlobalPaymentResponseContext } from "@/context/globalPaymentResponseContext";
 import { generateAuthPSEToken } from "@/lib/generateAuthToken";
+import { ApiResponse } from "@/types/ApiResponse";
 import { PaymentDataPse } from "@/types/PaymentPse";
 import { GlobalPaymentResponse } from "@/types/globalPaymentResponse";
 
-function useCreatePsePayment() {
+function useCreatePsePayment(apiResponse: ApiResponse | null) {
   const { setGlobalPaymentResponse, setLoading } =
     useGlobalPaymentResponseContext();
   const sendPayOrder = async (psePaymentData: PaymentDataPse) => {
@@ -26,6 +28,20 @@ function useCreatePsePayment() {
     const response: GlobalPaymentResponse = await request.json();
     setGlobalPaymentResponse(response);
     setLoading(false);
+    if (apiResponse){
+      SavePayment({
+        amount: psePaymentData.order.amount,
+        description: psePaymentData.order.description,
+        email: psePaymentData.user.email,
+        first_name: apiResponse.client_name,
+        last_name: apiResponse.client_name,
+        pay_method:"pse",
+        phone:apiResponse.phone,
+        subscriber: psePaymentData.user.id,
+        transaction_id: response.transaction.id,
+        transaction_status: response.transaction.status
+      })
+    }
   };
 
   return {
