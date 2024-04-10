@@ -5,6 +5,7 @@ import { CardPaymentOrderData } from "@/types/PaymentCard";
 import { TokenizeCardResponse } from "@/types/Paymentez";
 import { useGlobalPaymentResponseContext } from "@/context/globalPaymentResponseContext";
 import { GlobalPaymentResponse } from "@/types/globalPaymentResponse";
+import { SavePayment } from "@/api/Pocketbase";
 
 function useCreateCardPayment(apiResponse: ApiResponse | null, tokenizeCardData: TokenizeCardResponse | null ) {
 
@@ -32,6 +33,18 @@ function useCreateCardPayment(apiResponse: ApiResponse | null, tokenizeCardData:
       const response: GlobalPaymentResponse = await req.json();
       setGlobalPaymentResponse(response);
       setLoading(false);
+      SavePayment({
+        amount: data.order.amount,
+        description: data.order.description,
+        email: data.user.email,
+        first_name: data.user.first_name,
+        last_name: data.user.last_name,
+        pay_method:"card",
+        phone:data.user.phone,
+        subscriber: data.user.id,
+        transaction_id: response.transaction.id,
+        transaction_status: response.transaction.status
+      })
     }
   };
 
