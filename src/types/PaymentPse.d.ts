@@ -1,3 +1,12 @@
+type Order = {
+  dev_reference: string;
+  amount: number;
+  vat?: number;
+  description: string;
+  country?: string;
+  currency?: string;
+};
+
 type CarrierData = {
     id: string;
     extra_params: CarrierExtraParams;
