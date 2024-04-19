@@ -5,11 +5,22 @@ import { PaymentOptions } from "@/components/PaymentOptions";
 import { useGlobalPaymentResponseContext } from "@/context";
 import { TailSpin } from "react-loader-spinner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Rocket } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 function SearchResults({ data }: { data: ApiResponse }) {
-  const { globalPaymentResponse, loading } = useGlobalPaymentResponseContext();
+  const { globalCardPaymentResponse, globalPsePaymentResponse, loading } =
+    useGlobalPaymentResponseContext();
+
+
+  React.useEffect(() => {
+    // Verifica si globalPaymentResponse existe y su estado es "pending"
+    if (
+      globalPsePaymentResponse &&
+      globalPsePaymentResponse.transaction.status === "pending"
+    ) {
+      window.location.href = globalPsePaymentResponse.transaction.bank_url
+    }
+  }, [globalPsePaymentResponse]);
 
   return (
     <React.Fragment>
@@ -60,25 +71,24 @@ function SearchResults({ data }: { data: ApiResponse }) {
                 radius="1"
               />
             )}
-            
+
             {/* Renderizar la alerta según la respuesta del pago */}
-            {globalPaymentResponse &&
-              (globalPaymentResponse?.transaction.status !== "success" ? (
+            {globalCardPaymentResponse &&
+              (globalCardPaymentResponse?.transaction.status !== "success" ? (
                 // Si el estado no es "approved"
                 <Alert className="text-xl">
-                  <Rocket className="h-5 w-5" />
                   <AlertTitle>Pago procesado sin exito</AlertTitle>
                   <AlertDescription>
                     <div className="flex justify-evenly p-2">
                       <p>Estado del pago: </p>
                       <Badge variant={"outline"} className="bg-red-500">
-                        {globalPaymentResponse.transaction.status}
+                        {globalCardPaymentResponse?.transaction.status}
                       </Badge>
                     </div>
                     <div className="flex justify-evenly">
                       ID del pago:
                       <Badge variant={"outline"}>
-                        {globalPaymentResponse.transaction.id}
+                        {globalCardPaymentResponse?.transaction.id}
                       </Badge>
                     </div>
                     <p>Contacte con el area de facturación</p>
@@ -87,19 +97,18 @@ function SearchResults({ data }: { data: ApiResponse }) {
               ) : (
                 // Si el estado es "approved"
                 <Alert className="text-xl">
-                  <Rocket className="h-5 w-5" />
                   <AlertTitle>Pago procesado con exito</AlertTitle>
                   <AlertDescription>
                     <div className="flex justify-evenly p-2">
                       <p>Estado del pago: </p>
                       <Badge variant={"outline"} className="bg-green-400">
-                        {globalPaymentResponse.transaction.status}
+                        {globalCardPaymentResponse?.transaction.status}
                       </Badge>
                     </div>
                     <div className="flex justify-evenly">
                       ID del pago:
                       <Badge variant={"outline"}>
-                        {globalPaymentResponse.transaction.id}
+                        {globalCardPaymentResponse?.transaction.id}
                       </Badge>
                     </div>
                   </AlertDescription>
