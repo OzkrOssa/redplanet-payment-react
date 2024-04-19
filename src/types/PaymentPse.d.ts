@@ -25,32 +25,41 @@ type CarrierData = {
     order: Order;
   };
 
-  type PsePayResponse = {
-    application: {
-      code: string;
-    };
-    commerce: {
-      merchant_id: string;
-    };
-    user: {
-      name: string;
-      email: string;
-      id: string;
-    };
-    transaction: {
-      currency: string;
-      country: string;
-      dev_reference: string;
-      amount: number;
-      paid_date: string | null;
-      description: string;
-      status: string;
-      id: string;
-      bank_url: string;
-      status_bank: string;
-      trazability_code: number;
-      ticket_id: number;
-      pse_cycle: string;
-    };
+  type Application = {
+    code: string;
   };
+  
+  type Commerce = {
+    merchant_id: string;
+  };
+  
+  type User = {
+    name: string;
+    email: string;
+    id: string;
+  };
+  
+  type Transaction = {
+    currency: string;
+    country: string;
+    dev_reference: string;
+    amount: number;
+    paid_date: string | null;
+    description: string;
+    status: string;
+    id: string;
+    bank_url: string;
+    status_bank: string;
+    trazability_code: number;
+    ticket_id: number;
+    pse_cycle: string;
+  };
+  
+  type PsePayResponse = {
+    application: Application;
+    commerce: Commerce;
+    user: User;
+    transaction: Transaction;
+  };
+  
   
