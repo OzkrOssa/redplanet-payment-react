@@ -1,6 +1,6 @@
 import PocketBase from "pocketbase";
 
-const pb = new PocketBase("URL_SERVER");
+const pb = new PocketBase(import.meta.env.VITE_POCKETBASE_URL);
 
 type Pay = {
     subscriber: string,

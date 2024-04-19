@@ -50,9 +50,9 @@ export default function PaymentezSdk({
       };
 
       const paymentGatewayConfig = {
-        environment: "",
-        clientAppCode: "",
-        clientAppKey: "",
+        environment: import.meta.env.VITE_PAYMENTEZ_ENVIRONMENT,
+        clientAppCode: import.meta.env.VITE_PAYMENTEZ_CLIENT_APP_CODE,
+        clientAppKey: import.meta.env.VITE_PAYMENTEZ_CLIENT_APP_KEY,
       };
 
       // @ts-expect-error: exteral library

@@ -1,8 +1,8 @@
 import { SHA256, enc } from "crypto-js";
 
 export function generateAuthCardToken() {
-  const serverApiCode = "";
-  const serverApiKey = "";
+  const serverApiCode = import.meta.env.VITE_SERVER_CARD_APPCODE
+  const serverApiKey = import.meta.env.VITE_SERVER_CARD_APPKEY
   const unixTimestamp = Math.floor(Date.now() / 1000).toString();
   const tokenString = serverApiKey + unixTimestamp;
 
@@ -18,8 +18,8 @@ export function generateAuthCardToken() {
 }
 
 export function generateAuthPSEToken() {
-  const serverApiCode = "";
-  const serverApiKey = "";
+  const serverApiCode = import.meta.env.VITE_SERVER_PSE_APPCODE
+  const serverApiKey = import.meta.env.VITE_SERVER_PSE_APPKEY
   const unixTimestamp = Math.floor(Date.now() / 1000).toString();
   const tokenString = serverApiKey + unixTimestamp;
 

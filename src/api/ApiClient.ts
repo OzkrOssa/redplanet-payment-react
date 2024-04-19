@@ -2,7 +2,7 @@ import { ApiResponse } from "@/types/ApiResponse";
 
 export const fetchApiData = async (endpoint: string, param: string): Promise<ApiResponse | null> => {
   try {
-    const token = "YOUR_ACCESS_TOKEN"
+    const token = import.meta.env.VITE_REDPLANET_API_TOKEN
 
     const response = await fetch(
       `http://194.140.197.189:8090/api/v1/${endpoint}/${param}`,
