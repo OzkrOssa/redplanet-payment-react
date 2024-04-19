@@ -43,12 +43,12 @@ function PayU() {
           <input
             name="responseUrl"
             type="hidden"
-            value="http://www.test.com/response"
+            value="https://thanks.red-planet.com.co/"
           />
           <input
             name="confirmationUrl"
             type="hidden"
-            value="http://www.test.com/confirmation"
+            value="https://thanks.red-planet.com.co/"
           />
           <Button
             className="bg-transparent w-30 h-16"
