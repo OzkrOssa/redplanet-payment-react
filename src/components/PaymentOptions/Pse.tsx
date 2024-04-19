@@ -20,7 +20,7 @@ function Pse() {
   const {apiResponse} = useApiResponseContext()
   const {ipAddress} = useIpAddress()
   const {sendPayOrder} = useCreatePsePayment(apiResponse)
-  const { setGlobalPaymentResponse, setLoading } = useGlobalPaymentResponseContext();
+  const { setGlobalPsePaymentResponse, setLoading } = useGlobalPaymentResponseContext();
   const FormSchema = z.object({
     bank: z.string({
       required_error: "Selecciona un banco",
@@ -56,7 +56,7 @@ function Pse() {
           extra_params: {
             bank_code: "1022",
             //TODO: create response url
-            response_url: "https://ejemplo.com/response",
+            response_url: "https://thanks.red-planet.com.co/",
             origin_account: {
               application_code: "DV-REDPNETPSE-STG-CO-LTP",
               account_number: data.org_account_number,
@@ -119,7 +119,7 @@ function Pse() {
 
   const handleClick = () =>{
     setShowModal(true)
-    setGlobalPaymentResponse(null)
+    setGlobalPsePaymentResponse(null)
     setLoading(false)
   }
 

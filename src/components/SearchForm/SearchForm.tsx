@@ -9,14 +9,14 @@ import { useGlobalPaymentResponseContext } from "@/context";
 function SearchForm() {
   const [searchType, setSearchType] = React.useState("documento");
   const [searchValue, setSearchValue] = React.useState("");
-  const { setGlobalPaymentResponse, setLoading } =
+  const { setGlobalPsePaymentResponse, setLoading } =
     useGlobalPaymentResponseContext();
   const { apiResponse, setApiResponse } = useApiResponseContext();
   const handleSearchTypeChange = (type: string) => {
     setSearchType(type);
     setApiResponse(null);
     setSearchValue("");
-    setGlobalPaymentResponse(null)
+    setGlobalPsePaymentResponse(null)
     setLoading(false)
   };
 

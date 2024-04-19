@@ -1,15 +1,14 @@
 import React from "react";
 import { generateAuthCardToken } from "@/lib/generateAuthToken";
 import { ApiResponse } from "@/types/ApiResponse";
-import { CardPaymentOrderData } from "@/types/PaymentCard";
+import { CardPayResponse, CardPaymentOrderData } from "@/types/PaymentCard";
 import { TokenizeCardResponse } from "@/types/Paymentez";
 import { useGlobalPaymentResponseContext } from "@/context/globalPaymentResponseContext";
-import { GlobalPaymentResponse } from "@/types/globalPaymentResponse";
 import { SavePayment } from "@/api/Pocketbase";
 
 function useCreateCardPayment(apiResponse: ApiResponse | null, tokenizeCardData: TokenizeCardResponse | null ) {
 
-  const { setGlobalPaymentResponse, setLoading } = useGlobalPaymentResponseContext();
+  const { setGlobalCardPaymentResponse, setLoading } = useGlobalPaymentResponseContext();
   
   const createCardPayment = async (data: CardPaymentOrderData) => {
     if (data) {
@@ -30,8 +29,9 @@ function useCreateCardPayment(apiResponse: ApiResponse | null, tokenizeCardData:
       if (!req.ok) {
         console.log("error");
       }
-      const response: GlobalPaymentResponse = await req.json();
-      setGlobalPaymentResponse(response);
+      const response: CardPayResponse = await req.json();
+      console.log(response)
+      setGlobalCardPaymentResponse(response);
       setLoading(false);
       SavePayment({
         amount: data.order.amount,
