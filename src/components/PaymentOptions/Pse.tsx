@@ -5,21 +5,21 @@ import useBankList from "@/hooks/useBankList";
 import { X } from "lucide-react";
 import * as Select from "@/components/ui/select";
 import * as Form from "@/components/ui/form";
-import { Button, Input } from "@/components/ui";
+import { Button, Input } from "@/components/ui/index";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { identificationOptions } from "@/lib/constants";
 import { PaymentDataPse } from "@/types/PaymentPse";
-import { useApiResponseContext, useGlobalPaymentResponseContext } from "@/context";
+import { useSmartISPContext, useGlobalPaymentResponseContext } from "@/context";
 import { useCreatePsePayment } from "@/hooks/useCreatePsePayment";
 
-function Pse() {
+function Pse({isDisabled}:{isDisabled:boolean}) {
   const [showModal, setShowModal] = React.useState(false);
   const { banks } = useBankList();
-  const {apiResponse} = useApiResponseContext()
+  const {subscriber, invoice} = useSmartISPContext()
   const {ipAddress} = useIpAddress()
-  const {sendPayOrder} = useCreatePsePayment(apiResponse)
+  const {sendPayOrder} = useCreatePsePayment(subscriber)
   const { setGlobalPsePaymentResponse, setLoading } = useGlobalPaymentResponseContext();
   const FormSchema = z.object({
     bank: z.string({
@@ -49,7 +49,7 @@ function Pse() {
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (apiResponse) {
+    if (subscriber && invoice) {
       const psePaymentData: PaymentDataPse = {
         carrier: {
           id: "PSE",
@@ -71,43 +71,43 @@ function Pse() {
               account_bank_code: "1051",
             },
             user: {
-              name: apiResponse.client_name,
+              name: "Red Planet",
               type: data.user_type,
               type_fis_number: data.user_type_fis_number,
-              fiscal_number: apiResponse.document,
+              fiscal_number: data.org_account_nit,
               ip_address: ipAddress,
             },
             split: {
               transactions: [
                 {
                   application_code: "DV-REDPNETPSEH-STG-CO-LTP",
-                  amount: (apiResponse.total_pay / 3).toString(),
-                  vat: "5.0",
+                  amount: ( Number(invoice.total_pay) / 3).toString(),
+                  vat: "0",
                 },
                 {
                   application_code: "DV-REDPNETPSEH2-STG-CO-LTP",
-                  amount: (apiResponse.total_pay / 3).toString(),
-                  vat: "3.0",
+                  amount: ( Number(invoice.total_pay) / 3).toString(),
+                  vat: "0",
                 },
                 {
                   application_code: "DV-REDPNETPSEH3-STG-CO-LTP",
-                  amount: (apiResponse.total_pay / 3).toString(),
-                  vat: "2.0",
+                  amount: ( Number(invoice.total_pay) / 3).toString(),
+                  vat: "0",
                 },
               ],
             },
           },
         },
         user: {
-          id: apiResponse.subscriber,
-          email: apiResponse.email,
-          phone_number: apiResponse.phone,
+          id: subscriber.user.id.toString(),
+          email: subscriber.user.email,
+          phone_number: subscriber.user.phone,
         },
         order: {
-          dev_reference: `${apiResponse.bill_number}`,
-          amount: apiResponse.total_pay,
+          dev_reference: invoice.num_bill,
+          amount: Number(invoice.total_pay),
           vat: 0.0,
-          description: `Pago factura #${apiResponse.bill_number}`,
+          description: `Pago factura #${invoice.num_bill}`,
         },
       };
 
@@ -125,7 +125,7 @@ function Pse() {
 
   return (
     <>
-      <Button className="bg-transparent w-30 h-16" variant={"ghost"}>
+      <Button className="bg-transparent w-30 h-16" variant={"ghost"} disabled={isDisabled}>
         <img
           src={PseLogo}
           alt="Pse"

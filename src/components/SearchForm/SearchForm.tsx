@@ -1,20 +1,19 @@
 import React from "react";
 import { Button, Input } from "@/components/ui/index";
-import { useApiResponseContext } from "@/context/ApiResponseContext";
-import { fetchApiData } from "@/api/ApiClient";
+import { fetchApiData } from "@/api/SmartISP";
 import Laptop from "@/assets/images/laptop.png";
 import SearchResults from "./SearchResult";
-import { useGlobalPaymentResponseContext } from "@/context";
+import { useGlobalPaymentResponseContext, useSmartISPContext } from "@/context";
 
 function SearchForm() {
   const [searchType, setSearchType] = React.useState("documento");
   const [searchValue, setSearchValue] = React.useState("");
   const { setGlobalPsePaymentResponse, setLoading } =
     useGlobalPaymentResponseContext();
-  const { apiResponse, setApiResponse } = useApiResponseContext();
+  const {subscriber, setSubscriber} = useSmartISPContext()
   const handleSearchTypeChange = (type: string) => {
     setSearchType(type);
-    setApiResponse(null);
+    setSubscriber(null);
     setSearchValue("");
     setGlobalPsePaymentResponse(null)
     setLoading(false)
@@ -22,10 +21,9 @@ function SearchForm() {
 
   const handleSearch = async () => {
     if (!searchValue) return; // Evitar búsquedas vacías
-    const endpoint = searchType === "factura" ? "invoices" : "users/invoices";
-    const data = await fetchApiData(endpoint, searchValue);
+    const data = await fetchApiData(searchValue);
     if (data) {
-      setApiResponse(data);
+      setSubscriber(data);
       setSearchValue("");
     }
   };
@@ -55,9 +53,9 @@ function SearchForm() {
               Numero de identificación
             </button>
           </div>
-          {apiResponse ? (
+            {subscriber ? (
             //TODO: implement seach result component
-            <SearchResults data={apiResponse} />
+            <SearchResults data={subscriber} />
           ) : (
             <div className="w-full md:w-5/12 text-center">
               <Input

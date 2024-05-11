@@ -1,23 +1,23 @@
 import React from "react";
 import CardImage from "@/assets/images/cards.png";
-import { Button } from "@/components/ui";
 import PaymentezSdk from "./PaymentezSdk";
 import { X } from "lucide-react";
-import { useApiResponseContext, useGlobalPaymentResponseContext, usePaymentezSdkResponseContext } from "@/context";
+import { useSmartISPContext, useGlobalPaymentResponseContext, usePaymentezSdkResponseContext } from "@/context";
 import { useCreateCardPayment } from "@/hooks";
+import { Button } from "@/components/ui/index";
 
-function Card() {
+function Card({isDisabled}:{isDisabled:boolean}) {
   const [showModal, setShowModal] = React.useState(false);
   const { tokenizeCardData, setTokenizeCardData } = usePaymentezSdkResponseContext();
-  const { apiResponse } = useApiResponseContext();
-  useCreateCardPayment(apiResponse, tokenizeCardData)
+  const { subscriber, invoice } = useSmartISPContext();
+  useCreateCardPayment(subscriber,invoice, tokenizeCardData)
 
-  const { setGlobalPaymentResponse, setLoading } = useGlobalPaymentResponseContext();
+  const { setLoading, setGlobalCardPaymentResponse } = useGlobalPaymentResponseContext();
 
   return (
     <React.Fragment>
       <div>
-        <Button className="bg-transparent w-30 h-16" variant={"ghost"}>
+        <Button className="bg-transparent w-30 h-16" variant={"ghost"} disabled={isDisabled}>
           <img
             src={CardImage}
             alt="card logo"
@@ -27,7 +27,7 @@ function Card() {
             onClick={() => {
               setShowModal(true);
               setTokenizeCardData(null)
-              setGlobalPaymentResponse(null)
+              setGlobalCardPaymentResponse(null)
               setLoading(false)
             }}
           />

@@ -1,6 +1,6 @@
 import React from "react";
 import { MD5 } from "crypto-js";
-import { ApiResponse } from "@/types/ApiResponse";
+import { Invoice } from "@/types/SmartISP";
 
 type PayUConfig = {
   apiKey: string;
@@ -8,7 +8,7 @@ type PayUConfig = {
   accountID: string;
 }
 
-function usePayUConfig(apiResponse: ApiResponse | null) {
+function usePayUConfig(invoice: Invoice | null) {
   const [signature, setSignature] = React.useState("");
   const payUConfig: PayUConfig = {
     apiKey: import.meta.env.VITE_PAYU_API_KEY,
@@ -17,12 +17,12 @@ function usePayUConfig(apiResponse: ApiResponse | null) {
   }
 
   React.useEffect(() => {
-    if (apiResponse) {
-      const message = `${payUConfig.apiKey}~${payUConfig.merchantID}~${apiResponse.bill_number}~${apiResponse.total_pay}~COP`;
+    if (invoice) {
+      const message = `${payUConfig.apiKey}~${payUConfig.merchantID}~${invoice?.num_bill}~${invoice?.total_pay}~COP`;
       const hash = MD5(message).toString();
       setSignature(hash);
     }
-  }, [apiResponse, payUConfig.apiKey, payUConfig.merchantID]);
+  }, [invoice, payUConfig.apiKey, payUConfig.merchantID]);
   return {
     signature,
     payUConfig

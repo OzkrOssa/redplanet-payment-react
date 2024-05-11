@@ -1,17 +1,16 @@
 import React from "react";
 import payU from "@/assets/images/payu.png";
 import { Button } from "@/components/ui";
-import { useApiResponseContext } from "@/context/ApiResponseContext";
+import { useSmartISPContext } from "@/context/SmartISPContext";
 import { usePayUConfig } from "@/hooks/usePayUConfig";
 
-function PayU() {
-  const { apiResponse } = useApiResponseContext();
-  const { signature, payUConfig } = usePayUConfig(apiResponse);
+function PayU({isDisabled}:{isDisabled:boolean}) {
+  const { subscriber, invoice } = useSmartISPContext();
+  const { signature, payUConfig } = usePayUConfig(invoice);
 
-  //TODO: add confirmation url and response url
   return (
     <React.Fragment>
-      {apiResponse && (
+      {subscriber && invoice && (
         <form
           method="post"
           action="https://checkout.payulatam.com/ppp-web-gateway-payu/"
@@ -27,19 +26,19 @@ function PayU() {
           <input
             name="referenceCode"
             type="hidden"
-            value={apiResponse.bill_number.toString()}
+            value={invoice.num_bill}
           />
           <input
             name="amount"
             type="hidden"
-            value={apiResponse.total_pay.toString()}
+            value={invoice.total_pay}
           />
           <input name="tax" type="hidden" value="0" />
           <input name="taxReturnBase" type="hidden" value="0" />
           <input name="currency" type="hidden" value="COP" />
           <input name="signature" type="hidden" value={signature} />
           <input name="test" type="hidden" value="0" />
-          <input name="buyerEmail" type="hidden" value={apiResponse.email} />
+          <input name="buyerEmail" type="hidden" value={subscriber.user.email} />
           <input
             name="responseUrl"
             type="hidden"
@@ -54,6 +53,7 @@ function PayU() {
             className="bg-transparent w-30 h-16"
             variant={"ghost"}
             type="submit"
+            disabled={isDisabled}
           >
             <img
               src={payU}

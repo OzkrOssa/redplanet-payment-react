@@ -1,7 +1,7 @@
 import React from "react";
-import { Button } from "@/components/ui";
+import { Button } from "@/components/ui/index";
 import { TokenizeCardResponse, TokenizeData } from "@/types/Paymentez";
-import { useApiResponseContext } from "@/context";
+import { useSmartISPContext } from "@/context";
 
 export default function PaymentezSdk({
   setShowModal,
@@ -15,7 +15,7 @@ export default function PaymentezSdk({
   const [paymentezSDK, setPaymentezSDK] = React.useState(null);
   const [notCompleteForm, setNotCompleteForm] = React.useState("");
   const [textSubmitButton, setTextSubmitButton] = React.useState("Pagar");
-  const { apiResponse } = useApiResponseContext();
+  const { subscriber } = useSmartISPContext();
 
   //TODO: refactor this, i guess can add to conext
   React.useEffect(() => {
@@ -37,12 +37,12 @@ export default function PaymentezSdk({
   }, []);
 
   const initializePaymentForm = () => {
-    if (apiResponse) {
+    if (subscriber) {
       const tokenizeData: TokenizeData = {
         locale: "es",
         user: {
-          email: apiResponse.email,
-          id: apiResponse.subscriber,
+          email: subscriber.user.email,
+          id: subscriber.user.id.toString(),
         },
         configuration: {
           default_country: "COL",
